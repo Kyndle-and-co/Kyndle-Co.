@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kyndle & Co | Customize</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --cream:#F8F2E9;
+  --accent:#987070;
+  --dark:#301901ed;
+  --line: rgba(48,25,1,.16);
+  --shadow: 0 12px 30px rgba(0,0,0,.18);
+  --radius: 18px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Poppins,sans-serif;background:var(--cream);color:var(--dark)}
+
+header{
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #e6ddd2;
+  gap:14px;
+}
+header h1{font-family:Playfair Display,serif;color:var(--accent);font-size:28px;white-space:nowrap}
+nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+nav a{color:var(--accent);text-decoration:none;font-weight:500}
+
+/* header cart pill */
+.cart-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:999px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.75);
+  font-weight:700;cursor:pointer
+}
+.cart-count{
+  min-width:20px;height:20px;
+  padding:0 6px;border-radius:999px;
+  background:rgba(152,112,112,.14);
+  border:1px solid rgba(152,112,112,.22);
+  color:var(--accent);font-weight:900;font-size:12px;
+  display:inline-flex;align-items:center;justify-content:center
+}
+
+.page-hero{text-align:center;padding:70px 20px}
+.page-hero h2{font-family:Playfair Display,serif;font-size:44px}
+.page-hero p{color:var(--accent);max-width:650px;margin:10px auto}
+
+section{padding:60px 40px}
+
+.custom-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:30px}
+.option-box{background:#fff;border-radius:20px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.06)}
+.option-box h3{font-family:Playfair Display,serif;margin-bottom:10px}
+.option-box select,.option-box textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #ddd}
+
+.preview{margin-top:12px;border-radius:14px;overflow:hidden;height:180px;border:1px solid rgba(48,25,1,.10)}
+.preview img{width:100%;height:100%;object-fit:cover;display:block}
+
+.add-btn{text-align:center;margin-top:40px}
+.add-btn button{background:var(--accent);color:#fff;border:0;padding:15px 40px;border-radius:30px;font-size:16px;cursor:pointer}
+
+/* CART — drawer */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.2s;z-index:90}
+.overlay.open{opacity:1;pointer-events:auto}
+
+.cart-drawer{
+  position:fixed;top:0;right:-420px;width:min(420px,92vw);height:100vh;
+  background:rgba(255,255,255,.96);border-left:1px solid var(--line);
+  box-shadow:-18px 0 40px rgba(0,0,0,.18);z-index:100;
+  transition:.25s;display:flex;flex-direction:column;backdrop-filter:blur(10px)
+}
+.cart-drawer.open{right:0}
+
+.cart-head{padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.cart-title{font-size:16px;font-weight:900}
+.close-btn{border:1px solid var(--line);background:rgba(152,112,112,.18);border-radius:999px;padding:8px 10px;font-weight:900;cursor:pointer}
+
+.cart-body{padding:14px;flex:1;overflow:auto}
+.empty{border:1px dashed rgba(48,25,1,.22);border-radius:14px;padding:14px;font-weight:700;background:rgba(152,112,112,.08)}
+
+.cart-item{background:rgba(152,112,112,.08);border-radius:16px;padding:12px;margin-bottom:10px;border:1px solid rgba(48,25,1,.14)}
+.ci-top{display:flex;justify-content:space-between;gap:10px}
+.ci-name{font-weight:900;font-size:14px}
+.ci-price{font-weight:900;color:var(--accent)}
+
+.cart-foot{border-top:1px solid var(--line);padding:14px;background:rgba(152,112,112,.10)}
+.row{display:flex;justify-content:space-between;font-weight:800}
+.total{font-weight:900;color:var(--accent)}
+.cart-buttons{display:grid;gap:10px;margin-top:10px}
+.drawer-btn{padding:12px;border-radius:14px;border:2px solid rgba(48,25,1,.16);background:#fff;font-weight:900;cursor:pointer}
+.drawer-btn.primary{background:var(--accent);color:#fff}
+
+footer{background:var(--accent);color:var(--cream);padding:40px 20px;text-align:center;margin-top:60px}
+footer a{color:var(--cream)}
+
+@media(max-width:720px){
+  header{padding:16px 18px}
+  section{padding:40px 18px}
+  .page-hero h2{font-size:34px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Kyndle & Co.</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="collections.html">Collections</a>
+    <a href="customize.html">Customize</a>
+    <a href="contact.html">Contact</a>
+    <button class="cart-pill" id="openCart" type="button">🛒 <span class="cart-count" id="cartCount">0</span></button>
+  </nav>
+</header>
+
+<div class="page-hero">
+  <h2>Customize Your Candle</h2>
+  <p>Choose every detail and create a candle that feels uniquely yours.</p>
+</div>
+
+<section>
+  <div class="custom-grid">
+
+    <div class="option-box">
+      <h3>Candle Mold</h3>
+      <select id="mold">
+        <option value="classic">Classic Jar</option>
+        <option value="bubble">Bubble</option>
+        <option value="twist">Twist</option>
+        <option value="flower">Flower</option>
+      </select>
+      <div class="preview"><img id="moldPreview" src="images/mold-classic.jpg" alt="Candle mold preview"></div>
+    </div>
+
+    <div class="option-box">
+      <h3>Box Color</h3>
+      <select id="box">
+        <option value="ivory">Ivory</option>
+        <option value="beige">Beige</option>
+        <option value="blush">Blush</option>
+      </select>
+      <div class="preview"><img id="boxPreview" src="images/box-ivory.jpg" alt="Box color preview"></div>
+    </div>
+
+    <div class="option-box">
+      <h3>Flowers</h3>
+      <select id="flowers">
+        <option value="white">White</option>
+        <option value="pink">Pink</option>
+        <option value="lavender">Lavender</option>
+      </select>
+      <div class="preview"><img id="flowersPreview" src="images/flowers-white.jpg" alt="Flowers preview"></div>
+    </div>
+
+    <div class="option-box">
+      <h3>Candle Color</h3>
+      <select id="color">
+        <option value="ivory">Ivory</option>
+        <option value="sand">Sand</option>
+        <option value="mocha">Mocha</option>
+      </select>
+      <div class="preview"><img id="colorPreview" src="images/color-ivory.jpg" alt="Candle color preview"></div>
+    </div>
+
+    <div class="option-box">
+      <h3>Scent</h3>
+      <select id="scent">
+        <option value="vanilla">Vanilla</option>
+        <option value="amber">Amber</option>
+        <option value="lavender">Lavender</option>
+      </select>
+      <div class="preview"><img id="scentPreview" src="images/scent-vanilla.jpg" alt="Scent preview"></div>
+    </div>
+
+    <div class="option-box">
+      <h3>Order Note</h3>
+      <textarea id="note" placeholder="Any notes for your order?"></textarea>
+      <div class="preview"><img id="notePreview" src="images/customize-note.jpg" alt="Order note"></div>
+    </div>
+
+  </div>
+
+  <div class="add-btn">
+    <button type="button" onclick="addCustom()">Add to Cart</button>
+  </div>
+</section>
+
+<div class="overlay" id="overlay"></div>
+<aside class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <span class="cart-title">Your Cart</span>
+    <button class="close-btn" type="button" onclick="closeCart()">✕</button>
+  </div>
+
+  <div class="cart-body">
+    <div class="empty" id="empty">Your cart is empty.</div>
+    <div id="cartItems"></div>
+  </div>
+
+  <div class="cart-foot">
+    <div class="row"><small>Items</small><span id="items">0</span></div>
+    <div class="row"><small>Subtotal</small><span class="total" id="subtotal">$0.00</span></div>
+    <div class="cart-buttons">
+      <button class="drawer-btn" type="button" onclick="location.href='mycart.html'">Go to My Cart</button>
+      <button class="drawer-btn primary" type="button" onclick="location.href='mycart.html'">Checkout</button>
+    </div>
+  </div>
+</aside>
+
+<script>
+/* ========= IMAGE PREVIEWS =========
+   Put these images in your repo under /images/
+   (or change the filenames to match yours).
+*/
+const moldImages = {
+  classic: "images/mold-classic.jpg",
+  bubble:  "images/mold-bubble.jpg",
+  twist:   "images/mold-twist.jpg",
+  flower:  "images/mold-flower.jpg"
+};
+const boxImages = {
+  ivory: "images/box-ivory.jpg",
+  beige: "images/box-beige.jpg",
+  blush: "images/box-blush.jpg"
+};
+const flowersImages = {
+  white: "images/flowers-white.jpg",
+  pink: "images/flowers-pink.jpg",
+  lavender: "images/flowers-lavender.jpg"
+};
+const colorImages = {
+  ivory: "images/color-ivory.jpg",
+  sand: "images/color-sand.jpg",
+  mocha: "images/color-mocha.jpg"
+};
+const scentImages = {
+  vanilla: "images/scent-vanilla.jpg",
+  amber: "images/scent-amber.jpg",
+  lavender: "images/scent-lavender.jpg"
+};
+
+function setPreview(selectId, imgId, map){
+  const select = document.getElementById(selectId);
+  const img = document.getElementById(imgId);
+  function update(){
+    const key = select.value;
+    img.src = map[key] || "";
+  }
+  select.addEventListener("change", update);
+  update();
+}
+
+setPreview("mold", "moldPreview", moldImages);
+setPreview("box", "boxPreview", boxImages);
+setPreview("flowers", "flowersPreview", flowersImages);
+setPreview("color", "colorPreview", colorImages);
+setPreview("scent", "scentPreview", scentImages);
+
+/* ========= SHARED CART with mycart.html (localStorage) ========= */
+const CART_KEY = "kyndle_cart";
+
+function loadCart(){
+  try{
+    const raw = localStorage.getItem(CART_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    if(!Array.isArray(arr)) return [];
+    // normalize qty
+    return arr.map(it => ({
+      name: it.name,
+      price: Number(it.price) || 0,
+      qty: Math.max(1, Number(it.qty) || 1)
+    }));
+  }catch{
+    return [];
+  }
+}
+
+function saveCart(cart){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+/* drawer */
+const overlay = document.getElementById('overlay');
+const drawer = document.getElementById('cartDrawer');
+const cartItems = document.getElementById('cartItems');
+const empty = document.getElementById('empty');
+
+function openCart(){overlay.classList.add('open');drawer.classList.add('open')}
+function closeCart(){overlay.classList.remove('open');drawer.classList.remove('open')}
+
+document.getElementById('openCart').onclick = openCart;
+overlay.onclick = closeCart;
+
+function updateDrawer(){
+  const cart = loadCart();
+
+  const count = cart.reduce((s,i)=>s+i.qty,0);
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('items').textContent = count;
+
+  const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+  document.getElementById('subtotal').textContent = '$' + total.toFixed(2);
+
+  cartItems.innerHTML = '';
+  empty.style.display = cart.length ? 'none' : 'block';
+
+  cart.forEach(i=>{
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <div class="ci-top">
+          <span class="ci-name">${i.qty} × ${i.name}</span>
+          <span class="ci-price">$${(i.price*i.qty).toFixed(2)}</span>
+        </div>
+      </div>`;
+  });
+}
+
+function addCustom(){
+  const cart = loadCart();
+
+  const moldText = document.getElementById('mold').selectedOptions[0].textContent;
+  const boxText = document.getElementById('box').selectedOptions[0].textContent;
+  const flowersText = document.getElementById('flowers').selectedOptions[0].textContent;
+  const colorText = document.getElementById('color').selectedOptions[0].textContent;
+  const scentText = document.getElementById('scent').selectedOptions[0].textContent;
+  const noteText = (document.getElementById('note').value || "").trim();
+
+  let name = `Custom Candle – ${moldText}, ${boxText}, ${flowersText}, ${colorText}, ${scentText}`;
+  if(noteText) name += ` (Note: ${noteText})`;
+
+  const price = 20;
+
+  const existing = cart.find(i => i.name === name && Number(i.price) === Number(price));
+  if(existing){
+    existing.qty += 1;
+  }else{
+    cart.push({ name, price, qty: 1 });
+  }
+
+  saveCart(cart);
+  updateDrawer();
+  openCart();
+}
+
+/* init */
+updateDrawer();
+</script>
+
+<footer>
+  <p>&copy; 2026 Kyndle & Co.</p>
+</footer>
+</body>
+</html>
